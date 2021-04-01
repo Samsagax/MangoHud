@@ -1,4 +1,23 @@
 #include "battery.h"
+#include <filesystem.h>
+
+namespace fs = ghc::filesystem;
+
+int BatteryStats::numBattery(){
+    fs::path path("/sys/class/power_supply/");
+    int batteryCount=0;
+
+    for (auto& p : fs::directory_iterator(path)) {
+        string fileName = p.path().filename();
+        //std::cout << p << '\n';
+        if (fileName.find("BAT") != std::string::npos) {
+            batteryCount+=1;
+            battPath.push_back(p.path());
+        }
+    }
+    return batteryCount;
+}
+
 
 void BatteryStats::findFiles(){
     FILE *file;
@@ -15,8 +34,10 @@ void BatteryStats::findFiles(){
 }
 
 void BatteryStats::update(){
-    if (!files_fetched)
+    if (!files_fetched && numBattery() > 0) {
+        //we found battiers lets get their values
         findFiles();
+    }
 
     for(auto &pair : powerMap){
         if(pair.second.file) {
