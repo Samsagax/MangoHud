@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "battery.h"
 #include <filesystem.h>
 
@@ -20,15 +21,25 @@ int BatteryStats::numBattery(){
 
 
 void BatteryStats::findFiles(){
+    int batt_num = 0;
     FILE *file;
-    file = fopen("/sys/class/power_supply/BAT1/current_now", "r");
+    string syspath = battPath[batt_num].c_str();
+    if (numBattery() == 2) {
+
+    }
+    string current_power = syspath + "/current_now";
+    string current_voltage = syspath +"/voltage_now";
+    string charge_now = syspath + "/charge_now";
+    string charge_full = syspath + "/charge_full";
+    string percent = syspath + "/capacity";
+    file = fopen(current_power.c_str(), "r" );
     powerMap["current_now"] = {file, 0};
-    file = fopen("/sys/class/power_supply/BAT1/voltage_now", "r");
+    file = fopen(current_voltage.c_str(), "r");
     powerMap["voltage_now"] = {file, 0};
-    // file = fopen("/sys/class/power_supply/BAT1/charge_now", "r");
-    // powerMap["charge_now"] = {file, 0};
-    // file = fopen("/sys/class/power_supply/BAT1/charge_full", "r");
-    // powerMap["charge_full"] = {file, 0};
+    file = fopen(charge_now.c_str(), "r");
+    powerMap["charge_now"] = {file, 0};
+    file = fopen(charge_full.c_str(), "r");
+    powerMap["charge_full"] = {file, 0};
 
     files_fetched = true;
 }
@@ -48,6 +59,7 @@ void BatteryStats::update(){
         }
     }
     current_watt = powerMap["current_now"].value * powerMap["voltage_now"].value;
+    current_percent = powerMap["charge_now"].value / powerMap["charge_full"].value * 100;
 }
 
 BatteryStats Battery_Stats;

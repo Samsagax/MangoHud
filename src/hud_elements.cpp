@@ -578,15 +578,50 @@ void HudElements::vkbasalt(){
 void HudElements::battery_power(){
     if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_battery_power]){
         ImGui::TableNextRow(); ImGui::TableNextColumn();
-        ImGui::PushFont(HUDElements.sw_stats->font1);
-        ImGui::TextColored(HUDElements.colors.engine, "%s", "BATTERY");
+        ImGui::TextColored(HUDElements.colors.text, "BATT");
         ImGui::TableNextColumn();
-        right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%.1f",Battery_Stats.current_watt);
-        ImGui::SameLine(0, 1.0f);
+        right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%.1f", Battery_Stats.current_watt);
+        ImGui::SameLine(0,1.0f);
+        ImGui::PushFont(HUDElements.sw_stats->font1);
         ImGui::Text("W");
+        ImGui::PopFont();
+      }
+
+    if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_battery_power] && HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_battery_percent]){
+        ImGui::TableNextColumn();
+        right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%.1f", Battery_Stats.current_percent);
+        ImGui::SameLine(0,1.0f);
+        ImGui::PushFont(HUDElements.sw_stats->font1);
+        ImGui::Text("%%");
         ImGui::PopFont();
     }
 }
+
+// void HudElements::battery_power(){
+//     if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_battery_power]){
+//         ImGui::TableNextRow(); ImGui::TableNextColumn();
+//         ImGui::PushFont(HUDElements.sw_stats->font1);
+//         ImGui::TextColored(HUDElements.colors.engine, "%s", "BATTERY");
+//         ImGui::TableNextColumn();
+//         right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%.1f",Battery_Stats.current_watt);
+//         ImGui::SameLine(0, 1.0f);
+//         ImGui::Text("W");
+//         ImGui::PopFont();
+//     }
+// }
+//
+// void HudElements::battery_percent(){
+//     if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_battery_percent]){
+//         ImGui::TableNextRow(); ImGui::TableNextColumn();
+//         ImGui::PushFont(HUDElements.sw_stats->font1);
+//         ImGui::TextColored(HUDElements.colors.engine, "%s", "BATTERY");
+//         ImGui::TableNextColumn();
+//         right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%.1f",Battery_Stats.current_percent);
+//         ImGui::SameLine(0, 1.0f);
+//         ImGui::Text("%%");
+//         ImGui::PopFont();
+//     }
+// }
 
 void HudElements::graphs(){
     ImGui::TableNextRow(); ImGui::TableNextColumn();
@@ -740,6 +775,7 @@ void HudElements::sort_elements(std::pair<std::string, std::string> option){
     if (param == "exec")            { ordered_functions.push_back({_exec, value});
                                       exec_list.push_back({int(ordered_functions.size() - 1), value});       }
     if (param == "battery_power")   {ordered_functions.push_back({battery_power, value});           }
+    //if (param == "battery_percent")   {ordered_functions.push_back({battery_percent, value});       }
     if (param == "graphs"){
         if (!HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_graphs])
             HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_graphs] = true;

@@ -18,7 +18,9 @@ class BatteryStats{
         };
         std::unordered_map<std::string, powerStruct> powerMap;
         std::vector<std::string> battPath;
+        //std::vector<std::unordered_map<std::string, powerStruct>> battMap;
         float current_watt = 0;
+        float current_percent = 0;
 };
 
 extern BatteryStats Battery_Stats;
